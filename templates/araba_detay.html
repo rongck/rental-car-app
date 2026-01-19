@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Araç Resmi -->
+        <div class="col-md-6 mb-4">
+            <div class="card border-0 shadow-sm">
+                <img src="{{ url_for('static', filename='images/' + araba.resim_url) }}" 
+                     class="card-img-top" 
+                     alt="{{ araba.marka }} {{ araba.model }}"
+                     style="height: 400px; object-fit: cover;">
+            </div>
+        </div>
+        
+        <!-- Araç Detayları -->
+        <div class="col-md-6 mb-4">
+            <h1 class="mb-4">{{ araba.marka }} {{ araba.model }}</h1>
+            
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-calendar-alt text-primary me-2"></i>
+                                <div>
+                                    <small class="text-muted">Model Yılı</small>
+                                    <h5 class="mb-0">{{ araba.yil }}</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-tag text-primary me-2"></i>
+                                <div>
+                                    <small class="text-muted">Günlük Fiyat</small>
+                                    <h5 class="mb-0">{{ araba.gunluk_fiyat }} TL</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if current_user.is_authenticated %}
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Kiralama Formu</h5>
+                    <form action="{{ url_for('kirala', araba_id=araba.id) }}" method="post">
+                        <div class="mb-3">
+                            <label for="baslangic" class="form-label">Başlangıç Tarihi</label>
+                            <input type="date" class="form-control" id="baslangic" name="baslangic" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="bitis" class="form-label">Bitiş Tarihi</label>
+                            <input type="date" class="form-control" id="bitis" name="bitis" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-check"></i> Kirala
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Kiralama Yapmak İçin Giriş Yapın</h5>
+                    <p class="card-text">Araç kiralama işlemi için lütfen giriş yapın veya kayıt olun.</p>
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('login') }}" class="btn btn-primary">
+                            <i class="fas fa-sign-in-alt"></i> Giriş Yap
+                        </a>
+                        <a href="{{ url_for('register') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-user-plus"></i> Kayıt Ol
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Özellikler -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h2 class="mb-4">Araç Özellikleri</h2>
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="row g-4">
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <i class="fas fa-gas-pump fa-2x text-primary mb-2"></i>
+                                <h5>Yakıt Tipi</h5>
+                                <p class="text-muted">Benzin</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <i class="fas fa-cog fa-2x text-primary mb-2"></i>
+                                <h5>Vites</h5>
+                                <p class="text-muted">Otomatik</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <i class="fas fa-users fa-2x text-primary mb-2"></i>
+                                <h5>Kapasite</h5>
+                                <p class="text-muted">5 Kişilik</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <i class="fas fa-snowflake fa-2x text-primary mb-2"></i>
+                                <h5>Klima</h5>
+                                <p class="text-muted">Var</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Açıklama -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h2 class="mb-4">Araç Hakkında</h2>
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <p class="card-text">{{ araba.aciklama or 'Bu araç hakkında detaylı bilgi bulunmamaktadır.' }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Benzer Araçlar -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h2 class="mb-4">Benzer Araçlar</h2>
+            <div class="row g-4">
+                {% for benzer_araba in arabalar if benzer_araba.id != araba.id %}
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <img src="{{ url_for('static', filename='images/' + benzer_araba.resim_url) }}" 
+                             class="card-img-top" 
+                             alt="{{ benzer_araba.marka }} {{ benzer_araba.model }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ benzer_araba.marka }} {{ benzer_araba.model }}</h5>
+                            <p class="card-text">
+                                <i class="fas fa-calendar-alt text-primary"></i> {{ benzer_araba.yil }}<br>
+                                <i class="fas fa-tag text-primary"></i> {{ benzer_araba.gunluk_fiyat }} TL / Gün
+                            </p>
+                            <a href="{{ url_for('araba_detay', id=benzer_araba.id) }}" class="btn btn-primary w-100">
+                                <i class="fas fa-info-circle"></i> Detayları Gör
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

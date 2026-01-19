@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title mb-4">Yeni Araç Ekle</h2>
+                    
+                    <form action="{{ url_for('araba_ekle') }}" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="marka" class="form-label">Marka</label>
+                            <input type="text" class="form-control" id="marka" name="marka" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="model" class="form-label">Model</label>
+                            <input type="text" class="form-control" id="model" name="model" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="yil" class="form-label">Yıl</label>
+                            <input type="number" class="form-control" id="yil" name="yil" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="gunluk_fiyat" class="form-label">Günlük Fiyat (TL)</label>
+                            <input type="number" class="form-control" id="gunluk_fiyat" name="gunluk_fiyat" step="0.01" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="aciklama" class="form-label">Açıklama</label>
+                            <textarea class="form-control" id="aciklama" name="aciklama" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="resim" class="form-label">Araç Resmi</label>
+                            <input type="file" class="form-control" id="resim" name="resim" accept="image/*" required>
+                            <div class="form-text">İzin verilen formatlar: JPG, JPEG, PNG, GIF</div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Araç Ekle
+                            </button>
+                            <a href="{{ url_for('admin_panel') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left"></i> Geri Dön
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

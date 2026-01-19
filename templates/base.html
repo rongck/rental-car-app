@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techpro Araç Kiralama</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Animate.css -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+        /* Theme Variables */
+        :root[data-theme="light"] {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --gradient-start: #2980b9;
+            --gradient-end: #2c3e50;
+            --bg-color: #f8f9fa;
+            --text-color: #2c3e50;
+            --card-bg: #ffffff;
+        }
+
+        :root[data-theme="dark"] {
+            --primary-color: #1a1a1a;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #2c3e50;
+            --dark-color: #1a1a1a;
+            --gradient-start: #2c3e50;
+            --gradient-end: #1a1a1a;
+            --bg-color: #121212;
+            --text-color: #ffffff;
+            --card-bg: #1e1e1e;
+        }
+
+        /* Page Loader */
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--secondary-color);
+            border-top: 5px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Smooth Page Transitions */
+        .page-transition {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Scroll to Top Button */
+        .scroll-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--secondary-color);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+
+        .scroll-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: var(--secondary-color);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 999;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(180deg);
+        }
+
+        /* Notification System */
+        .notification {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: var(--card-bg);
+            color: var(--text-color);
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 1000;
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        /* Apply theme colors to existing elements */
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Poppins', sans-serif;
+            padding-top: 70px;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+
+        .navbar.scrolled {
+            padding: 0.5rem 0;
+            background: rgba(44, 62, 80, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.6rem;
+            color: white !important;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            padding-bottom: 3px;
+        }
+
+        .navbar-brand:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--secondary-color);
+            transition: width 0.3s ease;
+        }
+
+        .navbar-brand:hover:after {
+            width: 100%;
+        }
+
+        .navbar-brand i {
+            color: var(--secondary-color);
+            margin-right: 8px;
+            font-size: 1.8rem;
+            vertical-align: middle;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem !important;
+            margin: 0 0.2rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link:before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background-color: var(--secondary-color);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover:before {
+            width: 80%;
+        }
+
+        .nav-link:hover {
+            color: white !important;
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-link i {
+            margin-right: 5px;
+            font-size: 1.1rem;
+        }
+
+        .nav-link.active {
+            color: white !important;
+            background: rgba(52, 152, 219, 0.2);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            background: rgba(255,255,255,0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .user-info:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, var(--secondary-color), #2ecc71);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .user-name {
+            font-weight: 500;
+            margin-right: 10px;
+            color: white;
+        }
+
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            padding: 0.8rem 0;
+            margin-top: 1rem;
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(10px);
+            animation: dropdownFade 0.3s ease;
+        }
+
+        @keyframes dropdownFade {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dropdown-item {
+            padding: 0.7rem 1.5rem;
+            font-weight: 500;
+            color: var(--dark-color);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .dropdown-item:hover {
+            background: linear-gradient(135deg, rgba(41, 128, 185, 0.1), rgba(44, 62, 80, 0.1));
+            color: var(--secondary-color);
+            transform: translateX(5px);
+        }
+
+        .dropdown-item i {
+            margin-right: 8px;
+            width: 20px;
+            text-align: center;
+            color: var(--secondary-color);
+        }
+
+        .btn-primary {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+            padding: 0.5rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+            transform: translateY(-1px);
+        }
+
+        .alert {
+            border: none;
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .alert-warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .container {
+            padding: 2rem 0;
+        }
+
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+            background-color: var(--card-bg);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-img-top {
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .card-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-text {
+            color: #6c757d;
+        }
+
+        .footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        .footer h5 {
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .footer p {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .social-links a {
+            color: white;
+            margin-right: 1rem;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--secondary-color);
+        }
+
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.3rem;
+            }
+            
+            .user-name {
+                display: none;
+            }
+            
+            .nav-link {
+                padding: 0.5rem !important;
+                margin: 0.2rem 0;
+            }
+            
+            .user-info {
+                padding: 0.3rem 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Page Loader -->
+    <div class="page-loader">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand animate__animated animate__fadeIn" href="{{ url_for('index') }}">
+                <i class="fas fa-car"></i> Techpro Araç Kiralama
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if request.endpoint == 'index' }}" href="{{ url_for('index') }}">
+                            <i class="fas fa-home"></i> Ana Sayfa
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if request.endpoint == 'araba_ara' }}" href="{{ url_for('araba_ara') }}">
+                            <i class="fas fa-search"></i> Araç Ara
+                        </a>
+                    </li>
+                    {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if request.endpoint == 'kiralarim' }}" href="{{ url_for('kiralarim') }}">
+                            <i class="fas fa-list"></i> Kiralarım
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if request.endpoint == 'istatistik' }}" href="{{ url_for('istatistik') }}">
+                            <i class="fas fa-chart-bar"></i> İstatistikler
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if request.endpoint == 'profil' }}" href="{{ url_for('profil') }}">
+                            <i class="fas fa-user"></i> Profilim
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <div class="d-flex align-items-center">
+                    {% if current_user.is_authenticated %}
+                    <div class="dropdown">
+                        <div class="user-info" data-bs-toggle="dropdown">
+                                <div class="user-avatar">
+                                    {{ current_user.username[0].upper() }}
+                                </div>
+                                <span class="user-name">{{ current_user.username }}</span>
+                            <i class="fas fa-chevron-down text-white ms-2"></i>
+                            </div>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for('profil') }}">
+                                    <i class="fas fa-user-circle"></i> Profilim
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for('kiralarim') }}">
+                                    <i class="fas fa-history"></i> Kiralama Geçmişi
+                                </a>
+                            </li>
+                            {% if current_user.is_admin %}
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for('admin_panel') }}">
+                                    <i class="fas fa-cog"></i> Admin Paneli
+                                </a>
+                            </li>
+                            {% endif %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item text-danger" href="{{ url_for('logout') }}">
+                                <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    {% else %}
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-light me-2 hover-effect">
+                            <i class="fas fa-sign-in-alt"></i> Giriş Yap
+                        </a>
+                    <a href="{{ url_for('register') }}" class="btn btn-light hover-effect">
+                            <i class="fas fa-user-plus"></i> Kayıt Ol
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Hakkımızda</h5>
+                    <p>Techpro Araç Kiralama, kaliteli ve güvenilir araç kiralama hizmeti sunan öncü bir firmadır.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>İletişim</h5>
+                    <p>
+                        <i class="fas fa-phone"></i> +90 555 123 4567<br>
+                        <i class="fas fa-envelope"></i> info@techproarackiralama.com<br>
+                        <i class="fas fa-map-marker-alt"></i> İstanbul, Türkiye
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Sosyal Medya</h5>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-4" style="border-color: rgba(255,255,255,0.1);">
+            <div class="text-center">
+                <p class="mb-0">&copy; 2025 Techpro Araç Kiralama. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <div class="scroll-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <!-- Theme Toggle Button -->
+    <div class="theme-toggle">
+        <i class="fas fa-moon"></i>
+    </div>
+
+    <!-- Notification Container -->
+    <div class="notification">
+        <i class="fas fa-info-circle"></i>
+        <span class="notification-text"></span>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Add JavaScript for navbar scroll effect -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var navbar = document.querySelector('.navbar');
+        
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Page Loader
+        const pageLoader = document.querySelector('.page-loader');
+        window.addEventListener('load', () => {
+            pageLoader.style.opacity = '0';
+            pageLoader.style.visibility = 'hidden';
+        });
+
+        // Scroll to Top
+        const scrollToTop = document.querySelector('.scroll-to-top');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 200) {
+                scrollToTop.classList.add('visible');
+            } else {
+                scrollToTop.classList.remove('visible');
+            }
+        });
+
+        scrollToTop.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Theme Toggle
+        const themeToggle = document.querySelector('.theme-toggle');
+        const htmlElement = document.documentElement;
+        const themeIcon = themeToggle.querySelector('i');
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        htmlElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            htmlElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+            showNotification(`${newTheme.charAt(0).toUpperCase() + newTheme.slice(1)} tema aktif edildi`);
+        });
+
+        function updateThemeIcon(theme) {
+            themeIcon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+        }
+
+        // Notification System
+        function showNotification(message, type = 'info') {
+            const notification = document.querySelector('.notification');
+            const notificationText = notification.querySelector('.notification-text');
+            const icon = notification.querySelector('i');
+            
+            // Set icon based on notification type
+            icon.className = `fas fa-${type === 'success' ? 'check-circle' : 
+                                    type === 'error' ? 'exclamation-circle' : 
+                                    'info-circle'}`;
+            
+            notificationText.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Page Transitions
+        document.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                if (link.getAttribute('href').startsWith('/')) {
+                    e.preventDefault();
+                    document.body.classList.add('page-transition');
+                    setTimeout(() => {
+                        window.location = link.href;
+                    }, 500);
+                }
+            });
+        });
+    });
+    </script>
+</body>
+</html> 

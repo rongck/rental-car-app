@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="mb-4">İstatistikler</h2>
+
+    <!-- Özet Kartları -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-car fa-2x text-primary mb-3"></i>
+                    <h3 class="card-title">{{ toplam_arac }}</h3>
+                    <p class="card-text text-muted">Toplam Araç</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-users fa-2x text-success mb-3"></i>
+                    <h3 class="card-title">{{ toplam_kullanici }}</h3>
+                    <p class="card-text text-muted">Toplam Kullanıcı</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-clipboard-list fa-2x text-info mb-3"></i>
+                    <h3 class="card-title">{{ toplam_kiralama }}</h3>
+                    <p class="card-text text-muted">Toplam Kiralama</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-money-bill-wave fa-2x text-warning mb-3"></i>
+                    <h3 class="card-title">{{ "%.2f"|format(toplam_gelir) }} TL</h3>
+                    <p class="card-text text-muted">Toplam Gelir</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- En Çok Kiralanan Araçlar -->
+    <div class="card border-0 shadow-sm mb-5">
+        <div class="card-body">
+            <h3 class="card-title mb-4">En Çok Kiralanan Araçlar</h3>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Araç</th>
+                            <th>Kiralama Sayısı</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for araba, sayi in en_cok_kiralanan %}
+                        <tr>
+                            <td>{{ araba.marka }} {{ araba.model }}</td>
+                            <td>{{ sayi }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Son Kiralama İstatistikleri -->
+    <div class="card border-0 shadow-sm mb-5">
+        <div class="card-body">
+            <h3 class="card-title mb-4">Son 30 Günlük Kiralama İstatistikleri</h3>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Tarih</th>
+                            <th>Araç</th>
+                            <th>Kullanıcı</th>
+                            <th>Tutar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for kiralama in son_kiralamalar %}
+                        <tr>
+                            <td>{{ kiralama.baslangic_tarihi.strftime('%d.%m.%Y') }}</td>
+                            <td>{{ kiralama.araba.marka }} {{ kiralama.araba.model }}</td>
+                            <td>{{ kiralama.kullanici.username }}</td>
+                            <td>{{ "%.2f"|format(kiralama.toplam_fiyat) }} TL</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Aylık Gelir İstatistikleri -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <h3 class="card-title mb-4">Aylık Gelir İstatistikleri</h3>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Ay</th>
+                            <th>Toplam Gelir</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ay, gelir in aylik_gelir %}
+                        <tr>
+                            <td>{{ ay }}</td>
+                            <td>{{ "%.2f"|format(gelir) }} TL</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

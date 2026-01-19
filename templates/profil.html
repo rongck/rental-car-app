@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title mb-4">Profil Bilgileri</h2>
+                    
+                    <form method="POST" class="needs-validation" novalidate>
+                        <!-- Kullanıcı Adı -->
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Kullanıcı Adı</label>
+                            <input type="text" class="form-control" id="username" value="{{ current_user.username }}" disabled>
+                        </div>
+
+                        <!-- E-posta -->
+                        <div class="mb-3">
+                            <label for="email" class="form-label">E-posta Adresi</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ current_user.email }}" required>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <h4 class="mb-3">Şifre Değiştir</h4>
+                        
+                        <!-- Mevcut Şifre -->
+                        <div class="mb-3">
+                            <label for="mevcut_sifre" class="form-label">Mevcut Şifre</label>
+                            <input type="password" class="form-control" id="mevcut_sifre" name="mevcut_sifre">
+                        </div>
+
+                        <!-- Yeni Şifre -->
+                        <div class="mb-3">
+                            <label for="yeni_sifre" class="form-label">Yeni Şifre</label>
+                            <input type="password" class="form-control" id="yeni_sifre" name="yeni_sifre">
+                        </div>
+
+                        <!-- Yeni Şifre Tekrar -->
+                        <div class="mb-3">
+                            <label for="yeni_sifre_tekrar" class="form-label">Yeni Şifre (Tekrar)</label>
+                            <input type="password" class="form-control" id="yeni_sifre_tekrar" name="yeni_sifre_tekrar">
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Değişiklikleri Kaydet
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Form doğrulama
+(function () {
+    'use strict'
+    var forms = document.querySelectorAll('.needs-validation')
+    Array.prototype.slice.call(forms).forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
+            form.classList.add('was-validated')
+        }, false)
+    })
+})()
+
+// Şifre eşleşme kontrolü
+document.getElementById('yeni_sifre_tekrar').addEventListener('input', function() {
+    var yeniSifre = document.getElementById('yeni_sifre').value;
+    var yeniSifreTekrar = this.value;
+    
+    if (yeniSifre !== yeniSifreTekrar) {
+        this.setCustomValidity('Şifreler eşleşmiyor!');
+    } else {
+        this.setCustomValidity('');
+    }
+});
+</script>
+{% endblock %} 

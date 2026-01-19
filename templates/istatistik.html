@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-center mb-5 animate__animated animate__fadeIn">İstatistikler</h1>
+    
+    <!-- Özet Kartları -->
+    <div class="row mb-5">
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm animate__animated animate__fadeInLeft">
+                <div class="card-body text-center">
+                    <i class="fas fa-car-side fa-3x text-primary mb-3"></i>
+                    <h3 class="card-title">{{ toplam_kiralama }}</h3>
+                    <p class="card-text text-muted">Toplam Kiralama</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm animate__animated animate__fadeInRight">
+                <div class="card-body text-center">
+                    <i class="fas fa-money-bill-wave fa-3x text-success mb-3"></i>
+                    <h3 class="card-title">{{ "%.2f"|format(toplam_gelir) }} ₺</h3>
+                    <p class="card-text text-muted">Toplam Gelir</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grafikler -->
+    <div class="row">
+        <!-- En Çok Kiralanan Araçlar -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm animate__animated animate__fadeInLeft">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">En Çok Kiralanan Araçlar</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="enCokKiralananChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kategori Dağılımı -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm animate__animated animate__fadeInRight">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">Araç Kategorileri Dağılımı</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="kategoriDagilimiChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Aylık Kiralama İstatistikleri -->
+        <div class="col-12 mb-4">
+            <div class="card shadow-sm animate__animated animate__fadeInUp">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title mb-0">Aylık Kiralama İstatistikleri</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="aylikKiralamaChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // En Çok Kiralanan Araçlar Grafiği
+    const enCokKiralananCtx = document.getElementById('enCokKiralananChart').getContext('2d');
+    new Chart(enCokKiralananCtx, {
+        type: 'bar',
+        data: {
+            labels: {{ en_cok_kiralanan|map(attribute=0)|list|tojson }},
+            datasets: [{
+                label: 'Kiralama Sayısı',
+                data: {{ en_cok_kiralanan|map(attribute=1)|list|tojson }},
+                backgroundColor: 'rgba(52, 152, 219, 0.5)',
+                borderColor: 'rgba(52, 152, 219, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Kategori Dağılımı Grafiği
+    const kategoriDagilimiCtx = document.getElementById('kategoriDagilimiChart').getContext('2d');
+    new Chart(kategoriDagilimiCtx, {
+        type: 'pie',
+        data: {
+            labels: {{ kategori_dagilimi|map(attribute=0)|list|tojson }},
+            datasets: [{
+                data: {{ kategori_dagilimi|map(attribute=1)|list|tojson }},
+                backgroundColor: [
+                    'rgba(52, 152, 219, 0.5)',
+                    'rgba(46, 204, 113, 0.5)',
+                    'rgba(155, 89, 182, 0.5)',
+                    'rgba(241, 196, 15, 0.5)',
+                    'rgba(231, 76, 60, 0.5)'
+                ]
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+
+    // Aylık Kiralama İstatistikleri Grafiği
+    const aylikKiralamaCtx = document.getElementById('aylikKiralamaChart').getContext('2d');
+    new Chart(aylikKiralamaCtx, {
+        type: 'line',
+        data: {
+            labels: {{ aylik_kiralama|map(attribute=0)|list|tojson }},
+            datasets: [{
+                label: 'Kiralama Sayısı',
+                data: {{ aylik_kiralama|map(attribute=1)|list|tojson }},
+                fill: false,
+                borderColor: 'rgba(52, 152, 219, 1)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %} 

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">{{ araba.marka }} {{ araba.model }} - Kiralama</h3>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <img src="{{ araba.resim_url or 'https://via.placeholder.com/400x300?text=Araç+Görseli' }}" 
+                             class="img-fluid rounded" 
+                             alt="{{ araba.marka }} {{ araba.model }}">
+                    </div>
+                    <div class="col-md-6">
+                        <h4>Araç Bilgileri</h4>
+                        <p><i class="fas fa-calendar"></i> Yıl: {{ araba.yil }}</p>
+                        <p><i class="fas fa-tag"></i> Günlük Fiyat: {{ araba.gunluk_fiyat }} TL</p>
+                    </div>
+                </div>
+
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="baslangic" class="form-label">Başlangıç Tarihi</label>
+                                <input type="date" class="form-control" id="baslangic" name="baslangic" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="bitis" class="form-label">Bitiş Tarihi</label>
+                                <input type="date" class="form-control" id="bitis" name="bitis" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Kiralamayı Tamamla</button>
+                        <a href="{{ url_for('araba_detay', id=araba.id) }}" class="btn btn-secondary">İptal</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

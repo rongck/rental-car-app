@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Kiralama Geçmişim</h2>
+    
+    {% if kiralamalar %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Araç</th>
+                        <th>Başlangıç Tarihi</th>
+                        <th>Bitiş Tarihi</th>
+                        <th>Toplam Fiyat</th>
+                        <th>Durum</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for kiralama in kiralamalar %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <img src="{{ url_for('static', filename='images/' + kiralama.araba.resim_url) }}" 
+                                     alt="{{ kiralama.araba.marka }} {{ kiralama.araba.model }}"
+                                     style="width: 60px; height: 40px; object-fit: cover; margin-right: 10px;">
+                                {{ kiralama.araba.marka }} {{ kiralama.araba.model }}
+                            </div>
+                        </td>
+                        <td>{{ kiralama.baslangic_tarihi.strftime('%d.%m.%Y') }}</td>
+                        <td>{{ kiralama.bitis_tarihi.strftime('%d.%m.%Y') }}</td>
+                        <td>{{ kiralama.toplam_fiyat }} TL</td>
+                        <td>
+                            {% if kiralama.baslangic_tarihi > datetime.now() %}
+                                <span class="badge bg-warning">Yaklaşan</span>
+                            {% elif kiralama.bitis_tarihi < datetime.now() %}
+                                <span class="badge bg-secondary">Tamamlandı</span>
+                            {% else %}
+                                <span class="badge bg-success">Aktif</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if kiralama.baslangic_tarihi > datetime.now() %}
+                                <a href="{{ url_for('kiralama_iptal', id=kiralama.id) }}" 
+                                   class="btn btn-danger btn-sm"
+                                   onclick="return confirm('Bu kiralama işlemini iptal etmek istediğinizden emin misiniz?')">
+                                    <i class="fas fa-times"></i> İptal Et
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> Henüz bir kiralama işleminiz bulunmuyor.
+            <a href="{{ url_for('index') }}" class="alert-link">Araçları incelemek için tıklayın.</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

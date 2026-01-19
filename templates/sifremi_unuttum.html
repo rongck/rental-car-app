@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title mb-4">Şifremi Unuttum</h2>
+                    <p class="text-muted mb-4">
+                        E-posta adresinizi girin, size şifre sıfırlama bağlantısı gönderelim.
+                    </p>
+
+                    <form method="POST" class="needs-validation" novalidate>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">E-posta Adresi</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                            <div class="invalid-feedback">
+                                Lütfen geçerli bir e-posta adresi girin.
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i> Şifre Sıfırlama Bağlantısı Gönder
+                            </button>
+                        </div>
+                    </form>
+
+                    <hr class="my-4">
+
+                    <div class="text-center">
+                        <a href="{{ url_for('login') }}" class="text-decoration-none">
+                            <i class="fas fa-arrow-left"></i> Giriş Sayfasına Dön
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Form doğrulama
+(function () {
+    'use strict'
+    var forms = document.querySelectorAll('.needs-validation')
+    Array.prototype.slice.call(forms).forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
+            form.classList.add('was-validated')
+        }, false)
+    })
+})()
+</script>
+{% endblock %} 

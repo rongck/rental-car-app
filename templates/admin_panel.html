@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Admin Paneli</h1>
+        <a href="{{ url_for('araba_ekle') }}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Yeni Araç Ekle
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Resim</th>
+                    <th>Marka</th>
+                    <th>Model</th>
+                    <th>Yıl</th>
+                    <th>Günlük Fiyat</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for araba in arabalar %}
+                <tr>
+                    <td>{{ araba.id }}</td>
+                    <td>
+                        <div style="width: 100px; height: 60px; overflow: hidden;">
+                            <img src="{{ url_for('static', filename='images/' + araba.resim_url) }}" 
+                                 alt="{{ araba.marka }} {{ araba.model }}" 
+                                 style="object-fit: cover; width: 100%; height: 100%;">
+                        </div>
+                    </td>
+                    <td>{{ araba.marka }}</td>
+                    <td>{{ araba.model }}</td>
+                    <td>{{ araba.yil }}</td>
+                    <td>{{ araba.gunluk_fiyat }} TL</td>
+                    <td>
+                        <a href="{{ url_for('araba_sil', id=araba.id) }}" 
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('Bu aracı silmek istediğinizden emin misiniz?')">
+                            <i class="fas fa-trash"></i> Sil
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %} 

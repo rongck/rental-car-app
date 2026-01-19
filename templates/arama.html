@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Arama Formu -->
+    <div class="card border-0 shadow-sm mb-5">
+        <div class="card-body">
+            <h2 class="mb-4">Araç Ara</h2>
+            <form action="{{ url_for('araba_ara') }}" method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label for="q" class="form-label">Marka veya Model</label>
+                    <input type="text" class="form-control" id="q" name="q" value="{{ query }}" placeholder="Örn: BMW, Mercedes">
+                </div>
+                <div class="col-md-2">
+                    <label for="min_fiyat" class="form-label">Min. Fiyat</label>
+                    <input type="number" class="form-control" id="min_fiyat" name="min_fiyat" placeholder="0">
+                </div>
+                <div class="col-md-2">
+                    <label for="max_fiyat" class="form-label">Max. Fiyat</label>
+                    <input type="number" class="form-control" id="max_fiyat" name="max_fiyat" placeholder="1000">
+                </div>
+                <div class="col-md-2">
+                    <label for="min_yil" class="form-label">Min. Yıl</label>
+                    <input type="number" class="form-control" id="min_yil" name="min_yil" placeholder="2000">
+                </div>
+                <div class="col-md-2">
+                    <label for="max_yil" class="form-label">Max. Yıl</label>
+                    <input type="number" class="form-control" id="max_yil" name="max_yil" placeholder="2024">
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Ara
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Arama Sonuçları -->
+    <div class="row g-4">
+        {% if arabalar %}
+            {% for araba in arabalar %}
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <img src="{{ url_for('static', filename='images/' + araba.resim_url) }}" 
+                         class="card-img-top" 
+                         alt="{{ araba.marka }} {{ araba.model }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ araba.marka }} {{ araba.model }}</h5>
+                        <p class="card-text">
+                            <i class="fas fa-calendar-alt text-primary"></i> {{ araba.yil }}<br>
+                            <i class="fas fa-tag text-primary"></i> {{ araba.gunluk_fiyat }} TL / Gün
+                        </p>
+                        <a href="{{ url_for('araba_detay', id=araba.id) }}" class="btn btn-primary w-100">
+                            <i class="fas fa-info-circle"></i> Detayları Gör
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> Arama kriterlerinize uygun araç bulunamadı.
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 
